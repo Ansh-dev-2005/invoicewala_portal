@@ -1,8 +1,10 @@
 import axios from "axios";
 import { getHsn } from "./action/hsn";
 import { getItemGroup } from "./action/itemgroup";
+import api from "./action/api";
+// import api from "./api";
+// const itemapi = `${api}/auth`;
 
-const api = "http://localhost:5000/api/items/items";
 const token = sessionStorage.getItem("token");
 
 // export const getItems = async () => {
@@ -16,7 +18,7 @@ const token = sessionStorage.getItem("token");
 
 export const getItems = async () => {
   try {
-    const response = await axios.get(api, {
+    const response = await axios.get(`${api}/get-items`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`, // Add the Authorization header
@@ -26,12 +28,12 @@ export const getItems = async () => {
     const items = response.data;
     const itemsWithHsn = await Promise.all(
       items.map(async (item) => {
-        const hsn = await getHsn(item.hsn_code);
+        const hsn = await getHsn(item.hsnsaccode_id);
         console.log(hsn);
-        const itemGroup = await getItemGroup(item.itemGroup);
+        const itemGroup = await getItemGroup(item.itemgroup_id);
         return {
           ...item,
-          hsn_code: hsn.hsn_code,
+          hsn_code: hsn.hsn_sac_code,
           itemGroup: itemGroup.name,
         };
         
@@ -48,16 +50,16 @@ export const getItems = async () => {
 
 export const getItem = async (id) => {
     try {
-        const response = await axios.get(`${api}/${id}`, {
-        headers: {
+        const response = await axios.get(`${api}/get-items/${id}`, {
+          headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`, // Add the Authorization header
-        },
+          },
         });
         const item = response.data;
-        const hsn = await getHsn(item.hsn_code);
+        const hsn = await getHsn(item.hsnsaccode_id);
         console.log(hsn);
-        const itemGroup = await getItemGroup(item.itemGroup);
+        const itemGroup = await getItemGroup(item.itemgroup_id);
         return {
           ...item,
           hsn_code: hsn.hsn_code,
@@ -67,4 +69,21 @@ export const getItem = async (id) => {
         console.error(error);
     }
     }
+    
+
+
+export const createItem = async (item) => {
+    try {
+        const response = await axios.post(`${api}/items`, item, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Add the Authorization header
+          },
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+    }
+
     

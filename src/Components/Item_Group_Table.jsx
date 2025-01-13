@@ -1,5 +1,4 @@
-// Adjusted Item_Table component to handle cases where no data is present
-
+// InvoiceTable.js
 import React, { useState } from "react";
 import { Box, TextField, Grid, Button, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
@@ -8,28 +7,20 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { useNavigate } from "react-router-dom";
 
-const Item_Table = ({ rows, columns, getRowId, onRowClick }) => {
+const Item_Group_Table = ({ rows, columns, getRowId, onRowClick }) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const navigate = useNavigate();
-  const filteredRows = rows.filter((row) => {
-    const date = new Date(row.date);
-    return (
-      (!startDate || date >= new Date(startDate)) &&
-      (!endDate || date <= new Date(endDate))
-    );
-  });
 
   const handleExportPDF = () => {
-    if (filteredRows.length === 0) {
+    if (rows.length === 0) {
       alert("No data available to export.");
       return;
     }
     const doc = new jsPDF();
     const tableColumns = columns.map((col) => col.headerName);
-    const tableRows = filteredRows.map((row) =>
-      columns.map((col) => row[col.field])
-    );
+    const tableRows = rows.map((row) => columns.map((col) => row[col.field]));
+
     doc.autoTable({
       head: [tableColumns],
       body: tableRows,
@@ -61,12 +52,11 @@ const Item_Table = ({ rows, columns, getRowId, onRowClick }) => {
         <Grid item>
           <Button variant="contained" color="primary">
             <CSVLink
-              data={filteredRows}
+              data={rows}
               filename="invoice-data.csv"
               style={{ color: "white", textDecoration: "none" }}
               onClick={(event) => {
-                // Prevent CSV export if no data is available
-                if (filteredRows.length === 0) {
+                if (rows.length === 0) {
                   alert("No data available to export.");
                   event.preventDefault();
                 }
@@ -84,9 +74,9 @@ const Item_Table = ({ rows, columns, getRowId, onRowClick }) => {
       </Grid>
 
       <Box mt={2} height={400} overflow={"auto"}>
-        {filteredRows.length > 0 ? (
+        {rows.length > 0 ? (
           <DataGrid
-            rows={filteredRows}
+            rows={rows}
             columns={columns}
             pageSize={5}
             getRowId={getRowId}
@@ -94,6 +84,11 @@ const Item_Table = ({ rows, columns, getRowId, onRowClick }) => {
             rowsPerPageOptions={[5]}
             checkboxSelection
             autoHeight
+            autosizeOptions={{
+              columns: columns.map((col) => col.field),
+              includeOutliers: true,
+              includeHeaders: true,
+            }}
             rowHeight={32}
           />
         ) : (
@@ -106,4 +101,4 @@ const Item_Table = ({ rows, columns, getRowId, onRowClick }) => {
   );
 };
 
-export default Item_Table;
+export default Item_Group_Table;

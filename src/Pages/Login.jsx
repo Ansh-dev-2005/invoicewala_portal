@@ -13,7 +13,11 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { signIn } from "../action/user";
-
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthContext";
+import { Alert, CircularProgress, Snackbar } from "@mui/material";
+import useState from "react";
+import { tr } from "date-fns/locale";
 function Copyright(props) {
   return (
     <Typography
@@ -32,22 +36,77 @@ function Copyright(props) {
   );
 }
 
-
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-  const handleSubmit = (event) => {
+     const [deferredPrompt, setDeferredPrompt] = React.useState(null);
+     const [open, setOpen] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
+
+
+     React.useEffect(() => {
+       const handler = (e) => {
+         e.preventDefault();
+         setDeferredPrompt(e);
+         setOpen(true); // Show the alert
+       };
+
+       window.addEventListener("beforeinstallprompt", handler);
+
+       return () => {
+         window.removeEventListener("beforeinstallprompt", handler);
+       };
+     }, []);
+
+     const handleInstallClick = () => {
+       if (deferredPrompt) {
+         deferredPrompt.prompt();
+         deferredPrompt.userChoice.then((choiceResult) => {
+           if (choiceResult.outcome === "accepted") {
+             console.log("User accepted the install prompt");
+           } else {
+             console.log("User dismissed the install prompt");
+           }
+           setDeferredPrompt(null);
+           setOpen(false); // Hide the alert
+         });
+       }
+     };
+
+     const handleClose = (event, reason) => {
+       if (reason === "clickaway") {
+         return;
+       }
+       setOpen(false);
+     };
+
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
+
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-    const response = signIn({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-    console.log(response);
+    const Username = data.get("username");
+    const Password = data.get("password");
+    const org_short_name = data.get("org_short_name");
+    setLoading(true); // Start loading
+
+    try {
+      const response = await signIn({ Username, Password, org_short_name });
+
+      if (response.status === 200) {
+        await sessionStorage.setItem("Token", response.data.token);
+        await login(response.data.token); // Call the login function to update authentication state
+        // alert("Login Successful");
+        navigate("/"); // Redirect to a protected route
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+      alert("Login failed. Please check your credentials.");
+    } finally {
+      setLoading(false); // Stop loading
+    }
   };
 
   return (
@@ -68,6 +127,14 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
+          <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="info" sx={{ width: "100%" }}>
+              Install our app for a better experience!
+              <Button color="inherit" size="small" onClick={handleInstallClick}>
+                Install
+              </Button>
+            </Alert>
+          </Snackbar>
           <Box
             component="form"
             onSubmit={handleSubmit}
@@ -78,10 +145,10 @@ export default function SignIn() {
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
               autoFocus
             />
             <TextField
@@ -94,6 +161,16 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
             />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="org_short_name"
+              label="Organization Short Name"
+              type="text"
+              id="org_short_name"
+              autoComplete="organization"
+            />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
@@ -103,9 +180,11 @@ export default function SignIn() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={loading} // Disable button when loading
             >
-              Sign In
+              {loading ? <CircularProgress size={24} /> : "Sign In"} 
             </Button>
+
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">

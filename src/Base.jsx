@@ -41,6 +41,9 @@ import { AccountMenu } from "./Components";
 import { Collapse, createTheme, Menu, MenuItem } from "@mui/material";
 import { Navigate, useNavigate } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
+import { useAuth } from "./AuthContext";
+import { getMenuItems } from "./action/user";
+import Breadcrumbs from "./Components/BreadCrumbs";
 const drawerWidth = 240;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -91,6 +94,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export default function Base(props) {
   const theme = useTheme();
+  const [menu , setMenu] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openMenu = Boolean(anchorEl);
@@ -100,11 +104,15 @@ export default function Base(props) {
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  const {logout} = useAuth();
 
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
+  const handleLogout = () => {
+    logout();
+    handleMenuClose();
+  };
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -139,6 +147,15 @@ export default function Base(props) {
   const handleMenuItemClick = (url) => {
     Navigate(url);
   };
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const response = await getMenuItems();
+      setMenu(response);
+    }
+    fetchData();
+
+  }, []);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -194,7 +211,7 @@ export default function Base(props) {
               <Settings sx={{ marginRight: 1 }} />
               Setting
             </MenuItem>
-            <MenuItem onClick={handleMenuClose}>
+            <MenuItem onClick={handleLogout}>
               <Logout sx={{ marginRight: 1 }} />
               Logout
             </MenuItem>
@@ -229,7 +246,7 @@ export default function Base(props) {
         </DrawerHeader>
         <Divider />
         <List>
-          {MenuItems.map((item, index) => (
+          {menu.map((item, index) => (
             <React.Fragment key={item.title}>
               <ListItem disablePadding>
                 <ListItemButton
@@ -302,6 +319,7 @@ export default function Base(props) {
                 overflow: "auto",
               }}
             >
+              <Breadcrumbs />
               {props.children}
             </Box>
           </Box>

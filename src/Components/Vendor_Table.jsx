@@ -1,35 +1,35 @@
-// Adjusted Item_Table component to handle cases where no data is present
-
-import React, { useState } from "react";
-import { Box, TextField, Grid, Button, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Grid, Button, Typography, CircularProgress } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { CSVLink } from "react-csv";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { useNavigate } from "react-router-dom";
 
-const Item_Table = ({ rows, columns, getRowId, onRowClick }) => {
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+const VendorTable = ({ rows = [], columns }) => {
   const navigate = useNavigate();
-  const filteredRows = rows.filter((row) => {
-    const date = new Date(row.date);
-    return (
-      (!startDate || date >= new Date(startDate)) &&
-      (!endDate || date <= new Date(endDate))
-    );
-  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate data fetching
+    const fetchData = async () => {
+      setLoading(true);
+      // Simulate a delay for fetching data
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
 
   const handleExportPDF = () => {
-    if (filteredRows.length === 0) {
+    if (rows.length === 0) {
       alert("No data available to export.");
       return;
     }
     const doc = new jsPDF();
     const tableColumns = columns.map((col) => col.headerName);
-    const tableRows = filteredRows.map((row) =>
-      columns.map((col) => row[col.field])
-    );
+    const tableRows = rows.map((row) => columns.map((col) => row[col.field]));
     doc.autoTable({
       head: [tableColumns],
       body: tableRows,
@@ -37,36 +37,31 @@ const Item_Table = ({ rows, columns, getRowId, onRowClick }) => {
     doc.save("invoice-data.pdf");
   };
 
+  if (loading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
     <Box>
       <Grid container spacing={2} alignItems="center">
         <Grid item>
-          <TextField
-            label="Start Date"
-            type="date"
-            InputLabelProps={{ shrink: true }}
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-        </Grid>
-        <Grid item>
-          <TextField
-            label="End Date"
-            type="date"
-            InputLabelProps={{ shrink: true }}
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-          />
-        </Grid>
-        <Grid item>
           <Button variant="contained" color="primary">
             <CSVLink
-              data={filteredRows}
+              data={rows}
               filename="invoice-data.csv"
               style={{ color: "white", textDecoration: "none" }}
               onClick={(event) => {
                 // Prevent CSV export if no data is available
-                if (filteredRows.length === 0) {
+                if (rows.length === 0) {
                   alert("No data available to export.");
                   event.preventDefault();
                 }
@@ -83,17 +78,16 @@ const Item_Table = ({ rows, columns, getRowId, onRowClick }) => {
         </Grid>
       </Grid>
 
-      <Box mt={2} height={400} overflow={"auto"}>
-        {filteredRows.length > 0 ? (
+      <Box mt={2} overflow={"auto"}>
+        {rows.length > 0 ? (
           <DataGrid
-            rows={filteredRows}
+            rows={rows}
             columns={columns}
             pageSize={5}
-            getRowId={getRowId}
-            onRowClick={onRowClick}
             rowsPerPageOptions={[5]}
             checkboxSelection
             autoHeight
+            onRowClick={(params) => navigate(`/masters/vendor/${params.id}`)}
             rowHeight={32}
           />
         ) : (
@@ -106,4 +100,4 @@ const Item_Table = ({ rows, columns, getRowId, onRowClick }) => {
   );
 };
 
-export default Item_Table;
+export default VendorTable;

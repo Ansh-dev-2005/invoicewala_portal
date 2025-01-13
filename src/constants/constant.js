@@ -45,189 +45,225 @@ export const state = {
     }
 
     export const MenuItems = [
-        {
-            title: "Dashboard",
-            url: "/",
+      {
+        title: "Dashboard",
+        url: "/",
+        cName: "nav-links",
+        icon: "Dashboard",
+      },
+      {
+        title: "Masters",
+        url: "/masters",
+        cName: "nav-links",
+        icon: "AppSettingsAltIcon",
+        sub_menu: [
+          {
+            title: "Order",
+            url: "/masters/order",
             cName: "nav-links",
-            icon: "Dashboard",
-        
-        },
-        {
-            title: "Masters",
-            url: "/masters",
+            icon: "Order",
+          },
+          {
+            title: "Goods Receive",
+            url: "/masters/goods-receive",
             cName: "nav-links",
-            icon: "AppSettingsAltIcon",
-            sub_menu: [
-                {
-                    title: "Order",
-                    url: "/masters/order",
-                    cName: "nav-links",
-                    icon: "Order",
-                },
-                {
-                    title: "Goods Receive",
-                    url: "/masters/goods-receive",
-                    cName: "nav-links",
-                    icon: "Goods",
-                },
-                {
-                    title: "Goods Return",
-                    url: "/masters/goods-return",
-                    cName: "nav-links",
-                    icon: "Goods",
-                },
-            ],
-        },
-        {
-            title: "Sales",
-            url: "/sales",
+            icon: "Goods",
+          },
+          {
+            title: "Goods Return",
+            url: "/masters/goods-return",
             cName: "nav-links",
-            icon: "PointOfSale",
-            sub_menu: [
-                {
-                    title: "Invoice",
-                    url: "/sales/invoice",
-                    cName: "nav-links",
-                    icon: "Invoice",
-                },
-                {
-                    title: "Estimate",
-                    url: "/sales/estimate",
-                    cName: "nav-links",
-                    icon: "Estimate",
-                },
-                {
-                    title: "Order",
-                    url: "/sales/order",
-                    cName: "nav-links",
-                    icon: "Order",
-                }
-                
-            ],
-        },
-        {
-            title: "Item",
-            url: "/item",
+            icon: "Goods",
+          },
+          {
+            title: "Vendor",
+            url: "/masters/vendor",
             cName: "nav-links",
-            icon: "item",
-            sub_menu:[
-                {
-                    title: "Items",
-                    url: "/items",
-                    cName: "nav-links",
-                    icon: "Items",
-                },
-                {
-                    title: "Category",
-                    url: "/items/category",
-                    cName: "nav-links",
-                    icon: "Category",
-                },
-                {
-                    title: "Brand",
-                    url: "/items/brand",
-                    cName: "nav-links",
-                    icon: "Brand",
-                },
-                {
-                    title: "Unit",
-                    url: "/items/unit",
-                    cName: "nav-links",
-                    icon: "Unit",
+            icon: "Goods",
+          },
+        ],
+      },
+      {
+        title: "Sales",
+        url: "/sales",
+        cName: "nav-links",
+        icon: "PointOfSale",
+        sub_menu: [
+          {
+            title: "Invoice",
+            url: "/sales/invoice",
+            cName: "nav-links",
+            icon: "Invoice",
+          },
+          {
+            title: "Estimate",
+            url: "/sales/estimate",
+            cName: "nav-links",
+            icon: "Estimate",
+          },
+          {
+            title: "Order",
+            url: "/sales/order",
+            cName: "nav-links",
+            icon: "Order",
+          },
+        ],
+      },
+      {
+        title: "Item",
+        url: "/item",
+        cName: "nav-links",
+        icon: "item",
+        sub_menu: [
+          {
+            title: "Items",
+            url: "/items",
+            cName: "nav-links",
+            icon: "Items",
+          },
+          {
+            title: "Category",
+            url: "/items/category",
+            cName: "nav-links",
+            icon: "Category",
+          },
+          {
+            title: "Brand",
+            url: "/items/brand",
+            cName: "nav-links",
+            icon: "Brand",
+          },
+          {
+            title: "Unit",
+            url: "/items/unit",
+            cName: "nav-links",
+            icon: "Unit",
+          },
+          {
+            title: "HSN/SAC",
+            url: "/items/hsn",
+            cName: "nav-links",
+            icon: "HSN",
+          },
+        ],
+      },
+      {
+        title: "Misc",
+        url: "/misc",
+        cName: "nav-links",
+        icon: "MiscellaneousServices",
+        sub_menu: [
+          {
+            title: "Customer",
+            url: "/misc/customer",
+            cName: "nav-links",
+            icon: "Customer",
+          },
+          {
+            title: "Supplier",
+            url: "/misc/supplier",
+            cName: "nav-links",
+            icon: "Supplier",
+          },
 
-                },
-                {
-                    title: "HSN/SAC",
-                    url: "/items/hsn",
-                    cName: "nav-links",
-                    icon: "HSN",
-                }
-                
-                
-            
-            ]
+          {
+            title: "Tax",
+            url: "/misc/tax",
+            cName: "nav-links",
+            icon: "Tax",
+          },
+        ],
+      },
+      {
+        title: "Goods Receive",
+        url: "/goods-receive",
+        cName: "nav-links",
+        icon: "ShoppingCartCheckout",
+        sub_menu: [
+          {
+            title: "Goods Receive",
+            url: "/purchase/purchase-order",
+            cName: "nav-links",
+            icon: "PurchaseOrder",
+          },
+          {
+            title: "Goods Receive Entry",
+            url: "/purchase/purchase-entry",
+            cName: "nav-links",
+            icon: "Purchase",
+          },
+        ],
+      },
+      {
+        title: "Reports",
+        url: "/reports",
+        cName: "nav-links",
+        icon: "BarChart",
+        sub_menu: [
+          {
+            title: "Sales Report",
+            url: "/reports/sales-report",
+            cName: "nav-links",
+            icon: "SalesReport",
+          },
+          {
+            title: "Purchase Report",
+            url: "/reports/purchase-report",
+            cName: "nav-links",
+            icon: "PurchaseReport",
+          },
+          {
+            title: "Stock Report",
+            url: "/reports/stock-report",
+            cName: "nav-links",
+            icon: "StockReport",
+          },
 
-
-        },
-        {
-            title: "Misc",
-            url: "/misc",
+          {
+            title: "GST Report",
+            url: "/reports/gst-report",
             cName: "nav-links",
-            icon: "MiscellaneousServices",
-            sub_menu: [
-                {
-                    title: "Customer",
-                    url: "/misc/customer",
-                    cName: "nav-links",
-                    icon: "Customer",
-                },
-                {
-                    title: "Supplier",
-                    url: "/misc/supplier",
-                    cName: "nav-links",
-                    icon: "Supplier",
-                },
-               
-                {
-                    title: "Tax",
-                    url: "/misc/tax",
-                    cName: "nav-links",
-                    icon: "Tax",
-                }
-            ]
-        },
-        {
-            title: "Purchase",
-            url: "/purchase",
-            cName: "nav-links",
-            icon: "ShoppingCartCheckout",
-            sub_menu: [
-                {
-                    title: "Purchase Order",
-                    url: "/purchase/purchase-order",
-                    cName: "nav-links",
-                    icon: "PurchaseOrder",
-                },
-                {
-                    title: "Purchase Entry",
-                    url: "/purchase/purchase-entry",
-                    cName: "nav-links",
-                    icon: "Purchase",
-                },
-                
-            ]
-        },
-        {
-            title: "Reports",
-            url: "/reports",
-            cName: "nav-links",
-            icon: "BarChart",
-            sub_menu: [
-                {
-                    title: "Sales Report",
-                    url: "/reports/sales-report",
-                    cName: "nav-links",
-                    icon: "SalesReport",
-                },
-                {
-                    title: "Purchase Report",
-                    url: "/reports/purchase-report",
-                    cName: "nav-links",
-                    icon: "PurchaseReport",
-                },
-                {
-                    title: "Stock Report",
-                    url: "/reports/stock-report",
-                    cName: "nav-links",
-                    icon: "StockReport",
-                },
-                
-                {
-                    title: "GST Report",
-                    url: "/reports/gst-report",
-                    cName: "nav-links",
-                    icon: "GstReport",
-                }
-            ]
-        },
+            icon: "GstReport",
+          },
+        ],
+      },
     ];
+export const stateCodes = {
+  "01": "Jammu & Kashmir",
+  "02": "Himachal Pradesh",
+  "03": "Punjab",
+  "04": "Chandigarh",
+  "05": "Uttarakhand",
+  "06": "Haryana",
+  "07": "Delhi",
+  "08": "Rajasthan",
+  "09": "Uttar Pradesh",
+  10: "Bihar",
+  11: "Sikkim",
+  12: "Arunachal Pradesh",
+  13: "Nagaland",
+  14: "Manipur",
+  15: "Mizoram",
+  16: "Tripura",
+  17: "Meghalaya",
+  18: "Assam",
+  19: "West Bengal",
+  20: "Jharkhand",
+  21: "Odisha",
+  22: "Gujarat",
+  23: "Daman and Diu",
+  24: "Dadra and Nagar Haveli",
+  25: "Maharashtra",
+  26: "Goa",
+  27: "Karnataka",
+  28: "Lakshadweep",
+  29: "Kerala",
+  30: "Tamil Nadu",
+  31: "Puducherry",
+  32: "Andaman and Nicobar Islands",
+  33: "Telangana",
+  34: "Andhra Pradesh",
+  35: "Ladakh",
+  36: "Ladakh",
+  37: "Jammu & Kashmir",
+};

@@ -1,14 +1,22 @@
-// Single_item.js
 import React, { useEffect, useState } from "react";
-import { Box, Button, Divider, Grid, TextField, Toolbar, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  Grid,
+  TextField,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import { useParams } from "react-router-dom";
-import { getItem } from "../../api";
+import { getItem } from "../../api"; // Assuming you have an updateItem function in your API
 import Base from "../../Base";
 import { Component_Title } from "../../Components";
-import { AddCircleOutline, SpaceBar } from "@mui/icons-material";
+import { AddCircleOutline } from "@mui/icons-material";
 
 const SingleItem = () => {
   const [item, setItem] = useState({});
+  const [editMode, setEditMode] = useState(false); // State to manage edit mode
   const { id } = useParams();
 
   // Fetch item data from API
@@ -18,28 +26,56 @@ const SingleItem = () => {
     });
   }, [id]);
 
+  // Function to handle saving changes
+  const handleSave = () => {
+    // Call API to update item here
+    // updateItem(item)
+    //   .then((updatedItem) => {
+    //     setItem(updatedItem);
+    //     setEditMode(false); // Exit edit mode after saving
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error updating item:", error);
+    //     // Handle error appropriately
+    //   });
+  };
+
+  // Function to handle editing
+  const handleEdit = () => {
+    setEditMode(true); // Enter edit mode
+  };
+
   return (
     <Base>
       <Box p={3}>
         <Toolbar>
-          <Component_Title>Item </Component_Title>
+          <Component_Title>Item Details</Component_Title>
           <Box sx={{ flexGrow: 1 }} />
-          <Button
-            // onClick={}
-            variant="contained"
-            startIcon={<AddCircleOutline />}
-            margin="normal"
-            sx={{ margin: "0.5rem" }} // Adjust margin as neede
-          >
-            Edit Item
-          </Button>
+          {!editMode && ( // Show Edit Item button when not in edit mode
+            <Button
+              variant="contained"
+              startIcon={<AddCircleOutline />}
+              onClick={handleEdit}
+              sx={{ margin: "0.5rem" }}
+            >
+              Edit Item
+            </Button>
+          )}
+          {editMode && ( // Show Save button when in edit mode
+            <Button
+              variant="contained"
+              startIcon={<AddCircleOutline />}
+              onClick={handleSave}
+              sx={{ margin: "0.5rem" }}
+            >
+              Save
+            </Button>
+          )}
           <Divider orientation="vertical" flexItem />
-
           <Button
-            // onClick={}
             variant="contained"
             startIcon={<AddCircleOutline />}
-            sx={{ margin: "0.5rem" }} // Adjust margin as neede
+            sx={{ margin: "0.5rem" }}
           >
             Add Batch
           </Button>
@@ -49,12 +85,13 @@ const SingleItem = () => {
           <Grid item xs={12} sm={6}>
             <TextField
               label="Name"
-              value={item.name || ""}
+              value={item.productName || ""}
               InputLabelProps={{ shrink: true }}
               fullWidth
               InputProps={{
-                readOnly: true,
+                readOnly: !editMode,
               }}
+              onChange={(e) => setItem({ ...item, name: e.target.value })}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -64,8 +101,11 @@ const SingleItem = () => {
               InputLabelProps={{ shrink: true }}
               fullWidth
               InputProps={{
-                readOnly: true,
+                readOnly: !editMode,
               }}
+              onChange={(e) =>
+                setItem({ ...item, description: e.target.value })
+              }
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -75,52 +115,63 @@ const SingleItem = () => {
               InputLabelProps={{ shrink: true }}
               fullWidth
               InputProps={{
-                readOnly: true,
+                readOnly: !editMode,
               }}
+              onChange={(e) => setItem({ ...item, itemGroup: e.target.value })}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
               label="HSN Code"
-              value={item.hsn_code || ""}
+              value={item.hsnCode || ""}
               InputLabelProps={{ shrink: true }}
               fullWidth
               InputProps={{
-                readOnly: true,
+                readOnly: !editMode,
               }}
+              onChange={(e) => setItem({ ...item, hsn_code: e.target.value })}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
               label="Primary Unit"
-              value={item.primaryUnit || ""}
+              value={item.primary_unit || ""}
               InputLabelProps={{ shrink: true }}
               fullWidth
               InputProps={{
-                readOnly: true,
+                readOnly: !editMode,
               }}
+              onChange={(e) =>
+                setItem({ ...item, primaryUnit: e.target.value })
+              }
             />
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
               label="Secondary Unit"
-              value={item.secondaryUnit || ""}
+              value={item.secondary_unit || ""}
               InputLabelProps={{ shrink: true }}
               fullWidth
               InputProps={{
-                readOnly: true,
+                readOnly: !editMode,
               }}
+              onChange={(e) =>
+                setItem({ ...item, secondaryUnit: e.target.value })
+              }
             />
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
               label="Conversion Factor"
-              value={item.conversionFactor || ""}
+              value={item.conversion_factor || ""}
               InputLabelProps={{ shrink: true }}
               fullWidth
               InputProps={{
-                readOnly: true,
+                readOnly: !editMode,
               }}
+              onChange={(e) =>
+                setItem({ ...item, conversionFactor: e.target.value })
+              }
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -130,8 +181,9 @@ const SingleItem = () => {
               InputLabelProps={{ shrink: true }}
               fullWidth
               InputProps={{
-                readOnly: true,
+                readOnly: !editMode,
               }}
+              onChange={(e) => setItem({ ...item, batch: e.target.value })}
             />
           </Grid>
           <Grid item xs={12}>
@@ -145,7 +197,15 @@ const SingleItem = () => {
                   InputLabelProps={{ shrink: true }}
                   fullWidth
                   InputProps={{
-                    readOnly: true,
+                    readOnly: !editMode,
+                  }}
+                  onChange={(e) => {
+                    const newAttributes = [...item.attributes];
+                    newAttributes[index] = {
+                      ...newAttributes[index],
+                      value: e.target.value,
+                    };
+                    setItem({ ...item, attributes: newAttributes });
                   }}
                   margin="normal"
                 />
